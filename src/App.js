@@ -5,28 +5,34 @@
     It uses the API functionality for finding nutritional info about the queried item.
 */
 import './Style.css';
+import React, {useState, useEffect} from 'react'
 
 function App() {
+
+  const [data, setData] = useState([])
 
   const parameters = {
     key: 'YKwPgkH8koOMHmcoOfafT8u75nOEQMrz44Ab42y2',
     query: 'apple',
     dataType: ["Survey (FNDDS)"],
-    pageSize: 5,
+    pageSize: 1,
   }
 
-  async function componentDidMount() {
-    const apiURL = `https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&pageSize=2&api_key=${encodeURIComponent(parameters.key)}
-    &query=${encodeURIComponent(parameters.query)}
-    &dataType=${encodeURIComponent(parameters.dataType)}
-    &pageSize=${encodeURIComponent(parameters.pageSize)}`
-    const response = await fetch(apiURL);
-    const data = response.json()
-    console.log(data)   
- }
+  useEffect(() => {
+    async function fetchAPI() {
+      const apiURL = `https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&pageSize=2&api_key=${encodeURIComponent(parameters.key)}&query=${encodeURIComponent(parameters.query)}&dataType=${encodeURIComponent(parameters.dataType)}&pageSize=${encodeURIComponent(parameters.pageSize)}`
+      const response = await fetch(apiURL)
+      const result = await response.json()
+      const item = result.results
+      setData(item)
+      console.log(result)
+    }
+    fetchAPI()
+  }, [])
 
   return (
     <div id="content">
+      <p>{data}</p>
     </div>
   );
 }
